@@ -15,3 +15,8 @@ class BidSerializer(serializers.ModelSerializer):
             "status",
         ]
         read_only_fields = ["id", "project", "freelancer", "created_at", "status"]
+
+    def validate_price(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Price must be greater than 0.")
+        return value
