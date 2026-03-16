@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,9 +10,27 @@ from users.permissions import ClientOnly, IsContractParticipant
 from .serializers import ReviewSerializer
 
 
+class DetailSerializer(serializers.Serializer):
+    detail = serializers.CharField()
+
+    class Meta:
+        ref_name = "ReviewDetailResponse"
+
+
 class ReviewCreateView(APIView):
     permission_classes = [IsAuthenticated, ClientOnly, IsContractParticipant]
 
+    @swagger_auto_schema(
+        operation_summary="Create review for finished contract",
+        request_body=ReviewSerializer,
+        responses={
+            201: ReviewSerializer,
+            400: DetailSerializer,
+            401: DetailSerializer,
+            403: DetailSerializer,
+            404: DetailSerializer,
+        },
+    )
     def post(self, request, contract_id):
         contract = get_object_or_404(Contract, id=contract_id)
         self.check_object_permissions(request, contract)

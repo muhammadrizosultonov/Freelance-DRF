@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,9 +13,26 @@ from contracts.models import Contract
 from users.permissions import ClientOnly, FreelancerOnly, IsProjectOwner
 
 
+class DetailSerializer(serializers.Serializer):
+    detail = serializers.CharField()
+
+    class Meta:
+        ref_name = "BidDetailResponse"
+
+
 class ProjectBidCreateView(APIView):
     permission_classes = [IsAuthenticated, FreelancerOnly]
 
+    @swagger_auto_schema(
+        operation_summary="Create bid for project",
+        request_body=BidSerializer,
+        responses={
+            201: BidSerializer,
+            400: DetailSerializer,
+            401: DetailSerializer,
+            403: DetailSerializer,
+        },
+    )
     def post(self, request, project_id):
         project = get_object_or_404(Project, id=project_id)
         if project.status != Project.Status.OPEN:
@@ -42,6 +60,17 @@ class ProjectBidListView(ListAPIView):
 class BidAcceptView(APIView):
     permission_classes = [IsAuthenticated, ClientOnly]
 
+    @swagger_auto_schema(
+        operation_summary="Accept bid and create contract",
+        request_body=None,
+        responses={
+            200: DetailSerializer,
+            400: DetailSerializer,
+            401: DetailSerializer,
+            403: DetailSerializer,
+            404: DetailSerializer,
+        },
+    )
     def post(self, request, bid_id):
         bid = get_object_or_404(Bid, id=bid_id)
         project = bid.project

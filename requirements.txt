@@ -3,4 +3,3 @@ djangorestframework
 djangorestframework-simplejwt
 django-filter
 drf-yasg
-psycopg2-binary
