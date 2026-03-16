@@ -17,18 +17,6 @@ Mini Upwork-style backend built with Django REST Framework. It supports clients 
 pip install -r requirements.txt
 ```
 
-2) Configure environment variables (examples):
-```bash
-export DJANGO_SECRET_KEY=change-me
-export DJANGO_DEBUG=1
-export DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
-
-export POSTGRES_DB=freelance_marketplace
-export POSTGRES_USER=postgres
-export POSTGRES_PASSWORD=postgres
-export POSTGRES_HOST=localhost
-export POSTGRES_PORT=5432
-```
 
 3) Run migrations:
 ```bash
